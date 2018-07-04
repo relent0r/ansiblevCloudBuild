@@ -1,0 +1,26 @@
+---
+
+- name: Extract VDC href
+  xml:
+    xmlstring: "{{ org_info.content }}"
+    xpath: "/n:Org/n:Link[@name='{{ vdc_name }}']"
+    content: attribute
+    attribute: href
+    namespaces: "n={{ namespace }}"
+  register: vdc_href
+
+- debug:
+    var: vdc_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}Link']['href']
+
+- name: Get VDC Information
+  uri:
+    url: "{{ vdc_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}Link']['href'] }}"
+    headers:
+      Accept: "application/*+xml;version={{ api_version }}"
+      Cookie: "{{ login.set_cookie }}"
+    method: GET
+    return_content: yes
+  register: vdc_info
+
+- debug:
+    var: vdc_info

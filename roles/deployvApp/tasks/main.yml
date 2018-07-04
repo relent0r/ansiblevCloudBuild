@@ -1,0 +1,16 @@
+---
+
+- name: Deploy vApp
+  uri:
+    url: "{{ vdc_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}Link']['href'] }}/action/instantiateVAppTemplate"
+    body: "{{ template }}"
+    headers:
+      Accept: "application/*+xml;version={{ api_version }}"
+      Cookie: "{{ login.set_cookie }}"
+      Content-Type: "application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml"
+    method: POST
+    return_content: yes
+    status_code: 201
+  register: response
+
+- debug: var=response

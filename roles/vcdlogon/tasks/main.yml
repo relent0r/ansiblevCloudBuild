@@ -1,0 +1,28 @@
+---
+
+- name: Basic Auth
+  uri: 
+    url: "{{ api_host }}/api/sessions"
+    force_basic_auth: yes
+    user: '{{ api_user }}'
+    password: '{{ api_password }}' 
+    headers:
+      Accept: "application/*+xml;version={{ api_version }}" 
+    method: POST 
+    return_content: yes
+  register: login
+
+- debug: 
+    var: login
+
+- name: Extract Org href
+  xml:
+    xmlstring: "{{ login.content }}"
+    xpath: "/n:Session/n:Link[@name='{{ org_name }}']"
+    content: attribute
+    attribute: href
+    namespaces: "n={{ namespace }}"
+  register: org_href
+
+- debug: 
+    var: org_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}Link']['href']    

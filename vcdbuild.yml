@@ -1,0 +1,17 @@
+---
+
+- name: vCloud Environment
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  vars_files:
+    - "roles/common/vars/main.yml"
+
+  roles:
+    - vcdlogon
+    - vcdgetOrg
+    - vcdgetVdc
+    - vcdgetStorage
+    - vcdgetvApp
+    - deployServers

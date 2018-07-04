@@ -1,0 +1,91 @@
+---
+
+- name: Extract Catalogue href
+  xml:
+    xmlstring: "{{ org_info.content }}"
+    xpath: "/n:Org/n:Link[@name='{{ catalogue_name }}']"
+    content: attribute
+    attribute: href
+    namespaces: "n={{ namespace }}"
+  register: org_catalogue
+
+- debug:
+    var: org_catalogue.matches[0]['{http://www.vmware.com/vcloud/v1.5}Link']['href']
+
+- name: Extract LAN href
+  xml:
+    xmlstring: "{{ org_info.content }}"
+    xpath: "/n:Org/n:Link[@name='{{ org_network_name }}']"
+    content: attribute
+    attribute: href
+    namespaces: "n={{ namespace }}"
+  register: lan_href
+
+- debug:
+    var: lan_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}Link']['href']
+
+- name: Get list of Catalog Items
+  uri: 
+    url: "{{ org_catalogue.matches[0]['{http://www.vmware.com/vcloud/v1.5}Link']['href'] }}" 
+    headers:
+      Accept: "application/*+xml;version={{ api_version }}" 
+      Cookie: "{{ login.set_cookie }}" 
+    method: GET 
+    return_content: yes
+  register: catalogue_items
+
+- name: Extract Catalog Item href   
+  xml: 
+    xmlstring: "{{ catalogue_items.content }}" 
+    xpath: "/n:Catalog/n:CatalogItems/n:CatalogItem[@name='{{ vapp_tmpl_name }}']"
+    content: attribute
+    attribute: href
+    namespaces: "n={{ namespace }}"  
+  register: catalogue_item
+
+- debug:
+    var: catalogue_item.matches[0]['{http://www.vmware.com/vcloud/v1.5}CatalogItem']['href'] 
+
+- name: Get CatalogueItem
+  uri:
+    url: "{{ catalogue_item.matches[0]['{http://www.vmware.com/vcloud/v1.5}CatalogItem']['href'] }}"
+    headers:
+      Accept: "application/*+xml;version={{ api_version }}"
+      Cookie: "{{ login.set_cookie }}"
+    method: GET
+    return_content: yes
+  register: catalogue_item
+
+- name: Extract Catalog Item href
+  xml:
+    xmlstring: "{{ catalogue_item.content }}"
+    xpath: "/n:CatalogItem/n:Entity[@name='{{ vapp_tmpl_name }}']"
+    content: attribute
+    attribute: href
+    namespaces: "n={{ namespace }}"
+  register: catalogue_item_href
+
+- debug:
+    var: catalogue_item_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}Entity']['href']
+
+- name: Get vApp Template
+  uri:
+    url: "{{ catalogue_item_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}Entity']['href'] }}"
+    headers:
+      Accept: "application/*+xml;version={{ api_version }}"
+      Cookie: "{{ login.set_cookie }}"
+    method: GET
+    return_content: yes
+  register: vapp_template
+
+- name: Extract Catalog Item href
+  xml:
+    xmlstring: "{{ vapp_template.content }}"
+    xpath: "/n:VAppTemplate/n:Children/n:Vm[1]"
+    content: attribute
+    attribute: href
+    namespaces: "n={{ namespace }}"
+  register: vapp_template_href
+
+- debug:
+    var: vapp_template_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}Vm']['href']   

@@ -1,0 +1,15 @@
+---
+
+- name: Get Org Information
+  uri:
+    url: "{{ org_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}Link']['href'] }}"
+    headers:
+      Accept: "application/*+xml;version={{ api_version }}"
+      Cookie: "{{ login.set_cookie }}"
+    method: GET
+    return_content: yes
+  register: org_info
+
+- debug:
+    var: org_info
+

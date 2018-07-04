@@ -1,0 +1,11 @@
+- name: Extract VDC Storage Profile href
+  xml:
+    xmlstring: "{{ vdc_info.content }}"
+    xpath: "/n:Vdc/n:VdcStorageProfiles/n:VdcStorageProfile[@name='{{ storageprofile_name }}']"
+    content: attribute
+    attribute: href
+    namespaces: "n={{ namespace }}"
+  register: storage_profile
+
+- debug:
+    var: storage_profile.matches[0]['{http://www.vmware.com/vcloud/v1.5}VdcStorageProfile']['href']

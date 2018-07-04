@@ -1,0 +1,37 @@
+<InstantiateVAppTemplateParams
+	xmlns="http://www.vmware.com/vcloud/v1.5"
+	name="{{ vapp_name }}"
+	deploy="false"
+	powerOn="false"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1">
+    <Description>{{ vapp_description }}</Description>
+    <Source href="{{ catalogue_item_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}Entity']['href'] }}" />
+	<SourcedItem>
+		<Source href="{{ vapp_template_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}Vm']['href'] }}"/>
+			<VmGeneralParams>
+				<Name>{{ vapp_name }}</Name>
+				<Description>{{ vapp_description }}</Description>
+				<NeedsCustomization>true</NeedsCustomization>
+			</VmGeneralParams>
+			<InstantiationParams>
+				<NetworkConnectionSection>
+					<ovf:Info>Configuration parameters for logical networks</ovf:Info>
+					<PrimaryNetworkConnectionIndex>0</PrimaryNetworkConnectionIndex>
+						<NetworkConnection network="none">
+							<NetworkConnectionIndex>0</NetworkConnectionIndex>
+							<IsConnected>true</IsConnected>
+							<IpAddressAllocationMode>POOL</IpAddressAllocationMode>
+						</NetworkConnection>
+				</NetworkConnectionSection>
+				<GuestCustomizationSection> 
+				<ovf:Info>Guest Customization Config</ovf:Info>
+					<Enabled>true</Enabled>
+					<ChangeSid>true</ChangeSid>
+					<ComputerName>{{ vapp_name }}</ComputerName>
+				</GuestCustomizationSection>
+			</InstantiationParams>
+		<StorageProfile href="{{ storage_profile.matches[0]['{http://www.vmware.com/vcloud/v1.5}VdcStorageProfile']['href'] }}"/>
+	</SourcedItem>
+	<AllEULAsAccepted>true</AllEULAsAccepted>
+</InstantiateVAppTemplateParams>
