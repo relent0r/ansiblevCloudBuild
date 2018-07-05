@@ -1,0 +1,7 @@
+---
+
+- include_role:
+    name: deployvApp
+  loop: "{{ server_names.name }}"
+  vars:
+    vapp_name: "{{ item }}"

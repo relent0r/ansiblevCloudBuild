@@ -2,6 +2,9 @@
 
 - include_role:
     name: deployvApp
-  loop: "{{ server_names.name }}"
+  loop: "{{ server_config }}"
   vars:
-    vapp_name: "{{ item }}"
+    vapp_name: "{{ item.name }}"
+    nic_connected: "{{ item.nic_connected }}"
+  loop_control:
+    label: "{{ item.name }}"
