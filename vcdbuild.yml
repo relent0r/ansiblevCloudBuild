@@ -12,6 +12,7 @@
     - vcdlogon
     - vcdgetOrg
     - vcdgetVdc
+    - vcdgetNetwork
     - vcdgetStorage
     - vcdgetvApp
     - deployServers

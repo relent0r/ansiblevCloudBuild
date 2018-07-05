@@ -6,6 +6,17 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1">
     <Description>{{ vapp_description }}</Description>
+    <InstantiationParams> 
+         <NetworkConfigSection>
+            <ovf:Info>Configuration for vApp</ovf:Info>
+			<NetworkConfig networkName="vAppNetwork">
+				<Configuration>
+					<ParentNetwork href="{{ lan_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}Link']['href'] }}" />
+					<FenceMode>bridged</FenceMode>
+				</Configuration>
+			</NetworkConfig>
+		</NetworkConfigSection>
+    </InstantiationParams>
     <Source href="{{ catalogue_item_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}Entity']['href'] }}" />
 	<SourcedItem>
 		<Source href="{{ vapp_template_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}Vm']['href'] }}"/>
@@ -18,10 +29,11 @@
 				<NetworkConnectionSection>
 					<ovf:Info>Configuration parameters for logical networks</ovf:Info>
 					<PrimaryNetworkConnectionIndex>0</PrimaryNetworkConnectionIndex>
-						<NetworkConnection network="none">
+						<NetworkConnection network="{{ org_network_name }}">
 							<NetworkConnectionIndex>0</NetworkConnectionIndex>
 							<IsConnected>true</IsConnected>
 							<IpAddressAllocationMode>POOL</IpAddressAllocationMode>
+							<NetworkAdapterType>VMXNET3</NetworkAdapterType>
 						</NetworkConnection>
 				</NetworkConnectionSection>
 				<GuestCustomizationSection> 

@@ -12,18 +12,6 @@
 - debug:
     var: org_catalogue.matches[0]['{http://www.vmware.com/vcloud/v1.5}Link']['href']
 
-- name: Extract LAN href
-  xml:
-    xmlstring: "{{ org_info.content }}"
-    xpath: "/n:Org/n:Link[@name='{{ org_network_name }}']"
-    content: attribute
-    attribute: href
-    namespaces: "n={{ namespace }}"
-  register: lan_href
-
-- debug:
-    var: lan_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}Link']['href']
-
 - name: Get list of Catalog Items
   uri: 
     url: "{{ org_catalogue.matches[0]['{http://www.vmware.com/vcloud/v1.5}Link']['href'] }}" 
