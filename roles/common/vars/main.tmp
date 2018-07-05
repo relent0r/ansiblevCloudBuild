@@ -1,0 +1,29 @@
+api_host: https://api.host.co.nz
+api_user: user@org
+api_password:  
+tmp_dir: /tmp
+api_version: 29.0
+org_name: org
+catalogue_name: Catalogue
+vapp_tmpl_name: W2K12 R2 Std
+vdc_name: vdcname
+vapp_name: Testvm01
+storageprofile_name: storageprofile
+vapp_description: This is a test vm
+vm_computer_name: testvm01
+namespace: http://www.vmware.com/vcloud/v1.5
+org_network_name: testnet01
+template: "{{ lookup('template', '{{ playbook_dir }}/roles/common/xml/instantiatevapptemplateparams.xml') }}"
+server_config:
+  - name: "TestServer01"
+    nic_connected: "false"
+    vm_cpu: "2"
+    vm_memory: "2048"
+  - name: "TestServer02"
+    nic_connected: "true"
+    vm_cpu: "4"
+    vm_memory: "4096"
+  - name: "TestServer03"
+    nic_connected: "true"
+    vm_cpu: "1"
+    vm_memory: "2048"

@@ -6,5 +6,7 @@
   vars:
     vapp_name: "{{ item.name }}"
     nic_connected: "{{ item.nic_connected }}"
+    vm_cpu: "{{ item.vm_cpu }}"
+    vm_memory: "{{ item.vm_memory }}"
   loop_control:
     label: "{{ item.name }}"
