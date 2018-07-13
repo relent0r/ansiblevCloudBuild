@@ -1,0 +1,14 @@
+---
+
+- name: vCloud Power On
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  vars_files:
+    - "roles/common/vars/main.yml"
+
+  roles:
+    - vcdlogon
+    - powerOnServers
+

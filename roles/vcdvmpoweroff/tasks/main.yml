@@ -1,0 +1,43 @@
+---
+
+- name: Get vApp
+  uri:
+    url: "{{ api_host }}/api/query?type=vApp&filter=name=={{ vapp_name }}"
+    headers:
+      Accept: "application/*+xml;version= {{ api_version }}"
+      Cookie: "{{ login.set_cookie }}"
+    method: GET
+    return_content: yes
+  register: vapp_response
+
+- debug:
+    var: vapp_response
+
+- name: Extract vApp_href
+  xml:
+    xmlstring: "{{ vapp_response.content }}"
+    xpath: "/n:QueryResultRecords/n:VAppRecord[@name='{{ vapp_name }}']"
+    content: attribute
+    attribute: href
+    namespaces: "n={{ namespace }}"
+  register: vapp_href
+
+- debug:
+    var: vapp_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}VAppRecord']['href']
+
+- name: PowerOff vApp
+  uri:
+    url: "{{ vapp_href.matches[0]['{http://www.vmware.com/vcloud/v1.5}VAppRecord']['href'] }}/action/undeploy"
+    headers:
+      Accept: "application/*+xml;version={{ api_version }}"
+      Cookie: "{{ login.set_cookie }}"
+      Content-Type: "application/vnd.vmware.vcloud.undeployVAppParams+xml"
+    method: POST
+    body: "<UndeployVAppParams xmlns=\"http://www.vmware.com/vcloud/v1.5\">\n<UndeployPowerAction>powerOff</UndeployPowerAction>\n</UndeployVAppParams>"
+    return_content: yes
+    status_code: 202
+  register: powerOff_result
+
+- debug:
+    var: powerOff_result
+

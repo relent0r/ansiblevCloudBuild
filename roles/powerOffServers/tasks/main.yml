@@ -1,0 +1,10 @@
+---
+
+- include_role:
+    name: vcdvmpoweroff
+  loop: "{{ server_config }}"
+  vars:
+    vapp_name: "{{ item.name }}"
+  loop_control:
+    label: "{{ item.name }}"
+
